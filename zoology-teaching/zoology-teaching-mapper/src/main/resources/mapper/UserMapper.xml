@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.UserMapper">
+  <!--用户集-->
+  <resultMap id="userResult" type="user">
+    <id property="user_id" column="user_id"/>
+    <result property="user_num" column="user_num"/>
+    <result property="user_neck" column="user_neck"/>
+    <result property="user_name" column="user_name"/>
+    <result property="user_portrait_url" column="user_portrait_url"/>
+    <result property="user_phone" column="user_phone"/>
+    <result property="user_password" column="user_password"/>
+    <result property="user_reg_ip" column="user_reg_ip"/>
+    <result property="user_account_non_expired" column="user_account_non_expired"/>
+    <result property="user_credentials_non_expired" column="user_credentials_non_expired"/>
+    <result property="user_account_non_locked" column="user_account_non_locked"/>
+    <result property="user_status" column="user_status"/>
+    <result property="user_is_del" column="user_is_del"/>
+    <result property="user_create_time" column="user_create_time"/>
+    <result property="user_update_time" column="user_update_time"/>
+    <result property="user_delete_time" column="user_delete_time"/>
+  </resultMap>
+  <!--角色集-->
+  <resultMap id="roleResult" type="role">
+    <id property="role_id" column="role_id"/>
+    <result property="role_name" column="role_name"/>
+    <result property="role_code" column="role_code"/>
+    <result property="role_description" column="role_description"/>
+    <result property="role_created_time" column="role_created_time"/>
+    <result property="role_updated_time" column="role_updated_time"/>
+    <result property="role_created_by" column="role_created_by"/>
+    <result property="role_updated_by" column="role_updated_by"/>
+  </resultMap>
+  <!--菜单集-->
+  <resultMap id="menuResult" type="menu">
+    <id property="menu_son_id" column="menu_son_id"/>
+    <result property="menu_son_name" column="menu_son_name"/>
+    <result property="menu_id" column="menu_id"/>
+    <result property="menu_name" column="menu_name"/>
+    <result property="menu_type_id" column="menu_type_id"/>
+    <result property="menu_href" column="menu_href"/>
+    <result property="menu_icon" column="menu_icon"/>
+    <result property="menu_description" column="menu_description"/>
+    <result property="menu_order_num" column="menu_order_num"/>
+    <result property="menu_shown" column="menu_shown"/>
+    <result property="menu_level" column="menu_level"/>
+    <result property="menu_created_time" column="menu_created_time"/>
+    <result property="menu_updated_time" column="menu_updated_time"/>
+    <result property="menu_created_by" column="menu_created_by"/>
+    <result property="menu_updated_by" column="menu_updated_by"/>
+  </resultMap>
+  <!--资源集-->
+  <resultMap id="resourceResult" type="resource">
+    <id property="resource_id" column="resource_id"/>
+    <result property="resource_name" column="resource_name"/>
+    <result property="resource_url" column="resource_url"/>
+    <result property="resource_category_num" column="resource_category_num"/>
+    <result property="resource_category_name" column="resource_category_name"/>
+    <result property="resource_description" column="resource_description"/>
+    <result property="resource_created_time" column="resource_created_time"/>
+    <result property="resource_updated_time" column="resource_updated_time"/>
+    <result property="resource_created_by" column="resource_created_by"/>
+    <result property="resource_updated_by" column="resource_updated_by"/>
+  </resultMap>
+  <!--通过手机号查询用户相应信息-->
+  <select id="selUsernameAndPasswordByphone" parameterType="string" resultMap="userResult">
+    select * from user where user_phone = #{user_phone}
+  </select>
+  <!--通过用户名查询用户相应信息-->
+  <select id="selPasswordByUsername" parameterType="string" resultMap="userResult">
+    select * from user where user_name = #{user_name}
+  </select>
+  <!--用户通过名字和时间进行多条件查询-->
+  <select id="selAllUserByNameAndTime" parameterType="userListBill" resultMap="userResult">
+    select * from user
+    <where>
+      <if test="true">
+        and user_is_del != 1
+      </if>
+      <if test="user_name != null and user_name != ''">
+        and user_name = #{user_name}
+      </if>
+      <if test="startCreateTime != null and endCreateTime != null">
+        and user_create_time BETWEEN #{startCreateTime} AND #{endCreateTime}
+      </if>
+    </where>
+  </select>
+  <!--根据id查询用户当前角色-->
+  <select id="selUserRelationRoleById" resultMap="roleResult" parameterType="int">
+    select r.role_id,r.role_name,r.role_code,r.role_description from role r inner join user_role_relation ur ON r.role_id = ur.role_id
+    inner join user u ON ur.user_id = u.user_id where u.user_id = #{user_id}
+  </select>
+  <!--通过用户id查询用户当前所拥有的所有角色-->
+  <select id="selAllUseAndRoleRelationByuserId" parameterType="int" resultMap="roleResult">
+      select r.* FROM role r LEFT JOIN user_role_relation ur
+      ON r.role_id=ur.role_id LEFT JOIN user u ON ur.user_id = u.user_id
+      WHERE u.user_id = #{user_id}
+  </select>
+  <select id="selParentMenuByRoleId" parameterType="java.util.List" resultMap="menuResult">
+    select distinct m.* from role r INNER JOIN role_menu_relation rm ON r.role_id = rm.role_id
+    INNER JOIN menu m ON rm.menu_id = m.menu_id WHERE m.menu_type_id = -1 AND r.role_id IN
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    GROUP BY m.menu_id
+  </select>
+  <!-- 根据menu_son_id查找子菜单-->
+  <select id="selSubMenuByPid" parameterType="int" resultMap="menuResult">
+    select * from menu where menu_id=#{menu_son_id}
+  </select>
+  <!--获取用户拥有的资源权限-->
+  <select id="selResourceByRoleId" parameterType="java.util.List" resultMap="resourceResult">
+    SELECT DISTINCT rc.* FROM roles r INNER JOIN role_resource_relation rrr ON r.`id` = rrr.`role_id` INNER JOIN resource rc ON rrr.`resource_id` = rc.`id` WHERE r.id IN <foreach item="item" index="index" collection="list" open="(" separator="," close=")"> #{item} </foreach> GROUP BY rc.id;
+  </select>
+  <!--根据用户id清空相应用户角色中间表-->
+  <delete id="deleteUserRoleRelation" parameterType="int">
+     delete from user_role_relation where user_id = #{userid}
+  </delete>
+  <!--增加相应用户的角色-->
+  <insert id="adduserAndRole">
+      insert into user_role_relation(null,user_id,role_id,user_role_created_time,
+      user_role_updated_time,user_role_created_by,user_role_updated_by) values(#{user_id},#{role_id},#{user_role_created_time},
+      #{user_role_updated_time},#{user_role_created_by},#{user_role_updated_by})
+    <!--获取添加成功记录返回的ID值赋值给Teacher实体中ID属性-->
+    <selectKey resultType="int" order="AFTER" keyProperty="user_role_id" keyColumn="user_role_id">
+      select LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+  <!--根据用户id和所给状态修改用户状态-->
+  <update id="updateUserStatus">
+    update user set user_status=#{user_status} where user_id=#{user_id}
+  </update>
+</mapper>

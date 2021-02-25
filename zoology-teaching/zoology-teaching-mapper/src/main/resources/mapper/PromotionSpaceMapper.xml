@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.PromotionSpaceMapper">
+    <!--广告位集-->
+    <resultMap id="promotion_space" type="promotion_space">
+      <id property="promotion_space_id" column="promotion_space_id"/>
+      <result property="promotion_space_num" column="promotion_space_num"/>
+      <result property="promotion_space_name" column="promotion_space_name"/>
+      <result property="promotion_space_spaceKey" column="promotion_space_spaceKey"/>
+      <result property="promotion_space_createTime" column="promotion_space_createTime"/>
+      <result property="promotion_space_updateTime" column="promotion_space_updateTime"/>
+      <result property="promotion_space_isDel" column="promotion_space_isDel"/>
+      <result property="remark" column="remark"/>
+    </resultMap>
+  <!--查询所有广告位-->
+ <select id="selPromotion_space" parameterType="promotion_space" resultMap="promotion_space">
+      select * from promotion_space
+ </select>
+   <!--根据广告位id查询广告位信息-->
+   <select id="selPromotionSpaceByPromotionSpaceId" parameterType="int" resultMap="promotion_space">
+       select * from promotion_space where promotion_space_id = #{promotion_space_id}
+   </select>
+  <!--新增广告位-->
+  <insert id="addPromotion_space" parameterType="promotion_space" keyProperty="promotion_space_id" keyColumn="promotion_space_id" useGeneratedKeys="true">
+      insert into promotion_space(promotion_space_id,promotion_space_num,promotion_space_name,
+      promotion_space_spaceKey,promotion_space_createTime,promotion_space_updateTime,
+      promotion_space_isDel,remark) values (#{promotion_space_id},#{promotion_space_num},#{promotion_space_name},
+      #{promotion_space_spaceKey},#{promotion_space_createTime},#{promotion_space_updateTime},
+      #{promotion_space_isDel},#{remark})
+      <selectKey order="AFTER" keyProperty="promotion_space_id" keyColumn="promotion_space_id" resultType="int">
+          select LAST_INSERT_ID()
+      </selectKey>
+  </insert>
+   <!--编辑广告位-->
+   <update id="editPromotion_space" parameterType="promotion_space">
+       update promotion_space set promotion_space_name = ${promotion_space_name},promotion_space_updateTime = ${promotion_space_updateTime}
+       where promotion_space_id = #{promotion_space_id}
+   </update>
+    <!--删除广告位-->
+    <delete id="delPromotion_space" parameterType="promotion_space">
+          delete from teacher where promotion_space_num = #{promotion_space_num}
+    </delete>
+</mapper>

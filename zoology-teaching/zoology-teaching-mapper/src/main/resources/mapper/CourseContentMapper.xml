@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.CourseContentMapper">
+    <!--章节查询片段-->
+    <sql id="selectSection">
+        select * from course_section
+    </sql>
+    <!-- 课时列表清单片段 -->
+    <sql id="lessonList">
+      cl.course_lesson_id, cl.course_id, cl.course_section_id,
+      cl.course_section_num,cl.course_lesson_num,cl.course_lesson_theme,
+      cl.course_lesson_order_num, cl.course_lesson_is_free,cl.course_lesson_order_num,
+      cl.course_lesson_status
+    </sql>
+ <!--章节对应课程集-->
+ <resultMap id="courseSection" type="courseSection">
+     <id property="course_id" column="course_id"/>
+     <result property="course_num" column="course_num"/>
+     <result property="course_name" column="course_name"/>
+ </resultMap>
+ <!--章节集-->
+ <resultMap id="section" type="course_section">
+     <id property="course_section_id" column="course_section_id"/>
+     <result property="course_id" column="course_id"/>
+     <result property="course_num" column="course_num"/>
+     <result property="course_section_num" column="course_section_num"/>
+     <result property="course_section_name" column="course_section_name"/>
+     <result property="course_section_description" column="course_section_description"/>
+     <result property="course_section_order_num" column="course_section_order_num"/>
+     <result property="course_section_create_time" column="course_section_create_time"/>
+     <result property="course_section_update_time" column="course_section_update_time"/>
+     <result property="course_section_delete_time" column="course_section_delete_time"/>
+     <result property="course_section_status" column="course_section_status"/>
+     <result property="course_section_is_de" column="course_section_is_de"/>
+     <result property="remark" column="remark"/>
+ </resultMap>
+<!--章节课时集-->
+<resultMap id="sectionLesson" type="course_section">
+  <id property="course_section_id" column="course_section_id"/>
+  <result property="course_id" column="course_id"/>
+  <result property="course_num" column="course_num"/>
+  <result property="course_section_num" column="course_section_num"/>
+  <result property="course_section_name" column="course_section_name"/>
+  <result property="course_section_description" column="course_section_description"/>
+  <result property="course_section_order_num" column="course_section_order_num"/>
+  <result property="course_section_create_time" column="course_section_create_time"/>
+  <result property="course_section_update_time" column="course_section_update_time"/>
+  <result property="course_section_delete_time" column="course_section_delete_time"/>
+  <result property="course_section_status" column="course_section_status"/>
+  <result property="course_section_is_de" column="course_section_is_de"/>
+  <result property="remark" column="remark"/>
+  <collection property="courseLessons" ofType="course_lesson">
+     <id property="course_lesson_id" column="course_lesson_id"/>
+     <result property="course_id" column="course_id"/>
+     <result property="course_num" column="course_num"/>
+     <result property="course_section_id" column="course_section_id"/>
+     <result property="course_section_num" column="course_section_num"/>
+     <result property="course_lesson_num" column="course_lesson_num"/>
+     <result property="course_lesson_theme" column="course_lesson_theme"/>
+     <result property="course_lesson_duration" column="course_lesson_duration"/>
+     <result property="course_lesson_order_num" column="course_lesson_order_num"/>
+     <result property="course_lesson_create_time" column="course_lesson_create_time"/>
+     <result property="course_lesson_update_time" column="course_lesson_update_time"/>
+     <result property="course_lesson_delete_time" column="course_lesson_delete_time"/>
+     <result property="course_lesson_status" column="course_lesson_status"/>
+     <result property="course_lesson_is_free" column="course_lesson_is_free"/>
+     <result property="course_lesson_is_del" column="course_lesson_is_del"/>
+     <result property="remark" column="remark"/>
+  </collection>
+</resultMap>
+    <!--通过课程id查询课程名以来进行行章节对应课程信息的回显或直接通过课程id查询相应课程-->
+    <select id="selSignCourseIdByCourseName" parameterType="string" resultMap="courseSection">
+        select course_id,course_num,course_name from course where course_num = #{course_num}
+    </select>
+<!-- 根据课程id查询课程内容(章节与课时) -->
+<select id="selSectionAndLessonByCourseId" parameterType="int" resultMap="sectionLesson">
+   select cs.*,
+   <include refid="lessonList"/>
+   from course_section cs left join course_lesson cl on
+   cs.course_section_id = cl.course_section_id where cs.course_id = #{course_id} order by cs.course_section_order_num
+</select>
+<!--新增章节-->
+<insert id="addCourseSection" parameterType="course_section" useGeneratedKeys="true" keyProperty="course_section_id" keyColumn="course_section_id">
+    <!--
+           selectKey : 适用范围更广，支持所有类型的数据库
+               order="AFTER"  ： 设置在sql语句执行前（后），执行此语句
+               keyColumn="id" : 指定主键对应列名
+               keyProperty="id"：把返回主键的值，封装到实体中的那个属性上
+                resultType="int"：指定主键类型
+       -->
+    <selectKey order="AFTER" keyProperty="course_section_id" keyColumn="course_section_id" resultType="int">
+        SELECT LAST_INSERT_ID();
+    </selectKey>
+    insert into course_section(course_id,course_num,course_section_num,
+    course_section_name,course_section_description,course_section_order_num,
+    course_section_create_time,course_section_update_time,course_section_status,
+    course_section_is_de,remark)
+    values (#{course_id},#{course_num},#{course_section_num},
+    #{course_section_name},#{course_section_description},#{course_section_order_num},
+    #{course_section_create_time},#{course_section_update_time},#{course_section_status},
+    #{course_section_is_de},#{remark})
+</insert>
+<!--新增课时-->
+<insert id="addCourseLesson" parameterType="course_lesson">
+    <!--
+        selectKey : 适用范围更广，支持所有类型的数据库
+            order="AFTER"  ： 设置在sql语句执行前（后），执行此语句
+            keyColumn="id" : 指定主键对应列名
+            keyProperty="id"：把返回主键的值，封装到实体中的那个属性上
+             resultType="int"：指定主键类型
+    -->
+    <selectKey order="AFTER" keyProperty="course_lesson_id" keyColumn="course_lesson_id" resultType="int">
+        SELECT LAST_INSERT_ID();
+    </selectKey>
+    insert into course_lesson(course_id,course_num,course_section_id,
+    course_section_num,course_lesson_num,course_lesson_theme,
+    course_lesson_duration,course_lesson_order_num,course_lesson_create_time,
+    course_lesson_update_time,course_lesson_status,course_lesson_is_free,
+    course_lesson_is_del,remark)
+    values (#{course_id},#{course_num}, #{course_section_id},
+    #{course_section_num},#{course_lesson_num},#{course_lesson_theme},
+    #{course_lesson_duration},#{course_lesson_order_num},#{course_lesson_create_time},
+    #{course_lesson_update_time}, #{course_lesson_status},#{course_lesson_is_free},
+    #{course_lesson_is_del},#{remark})
+</insert>
+<!--修改章节-->
+<update id="updateCourseSection" parameterType="course_section">
+    <!--<set> : 在更新的时候，会自动添加set关键字，还会去掉最后一个条件的逗号 -->
+    update course_section
+    <trim prefix="set" suffixOverrides=",">
+      <if test="course_id != null and course_id !=''">
+          course_id = #{course_id},
+      </if>
+      <if test="course_num != null and course_num !=''">
+          course_num = #{course_num},
+      </if>
+      <if test="course_section_num != null and course_section_num !=''">
+          course_section_num = #{course_section_num},
+      </if>
+      <if test="course_section_name != null and course_section_name !=''">
+          course_section_name = #{course_section_name},
+      </if>
+      <if test="course_section_description != null and course_section_description !=''">
+          course_section_description = #{course_section_description},
+      </if>
+      <if test="course_section_order_num != null and course_section_order_num != '' or course_section_order_num == 0">
+          course_section_order_num = #{course_section_order_num},
+      </if>
+      <if test="course_section_update_time != null">
+          course_section_update_time = #{course_section_update_time}
+      </if>
+      <if test="remark != null and remark=''">
+            remark = #{remark}
+      </if>
+    </trim>
+    <where>
+        <if test="course_section_id != null and course_section_id != '' ">course_section_id = #{course_section_id}</if>
+    </where>
+</update>
+<!--修改课时-->
+<update id="updateCourseLesson" parameterType="course_lesson">
+    <!--<set> : 在更新的时候，会自动添加set关键字，还会去掉最后一个条件的逗号 -->
+    update course_lesson
+    <trim prefix="set" suffixOverrides=",">
+        <if test="course_id != null and course_id !=''">
+            course_id = #{course_id},
+        </if>
+        <if test="course_num != null and course_num !=''">
+            course_num = #{course_num},
+        </if>
+        <if test=" course_section_id != null and  course_section_id !=''">
+            course_section_id = #{ course_section_id},
+        </if>
+        <if test="course_section_num != null and course_section_num !=''">
+            course_section_num = #{course_section_num},
+        </if>
+        <if test="course_lesson_duration != null and course_lesson_duration !=''">
+            course_lesson_duration = #{course_lesson_duration},
+        </if>
+        <if test="course_lesson_order_num != null and course_lesson_order_num !=''">
+            course_lesson_order_num = #{course_lesson_order_num},
+        </if>
+        <if test="course_lesson_update_time != null and course_lesson_update_time != ''">
+            course_lesson_update_time = #{course_lesson_update_time},
+        </if>
+        <if test="course_lesson_status != null and course_lesson_status != ''">
+            course_lesson_status = #{course_lesson_status}
+        </if>
+        <if test="course_lesson_is_free != null and course_lesson_is_free != '' or course_lesson_is_free == 0">
+            course_lesson_is_free = #{course_lesson_is_free}
+        </if>
+        <if test="course_lesson_is_del != null and course_lesson_is_del != '' or course_lesson_is_del == 0">
+            course_lesson_is_del = #{course_lesson_is_del}
+        </if>
+        <if test="remark != null and remark=''">
+            remark = #{remark}
+        </if>
+    </trim>
+    <where>
+        <if test="course_section_id != null and course_section_id != '' ">course_section_id = #{course_section_id}</if>
+    </where>
+</update>
+<!--修改章节状态-->
+ <update id="updateSectionStatus" parameterType="courseContentStatesShow">
+     update course_section set course_section_status = #{course_section_status}, course_section_update_time = #{course_section_update_time} where course_section_id = #{course_section_id} and course_section_num = #{course_section_num}
+ </update>
+<!--删除章节-->
+<delete id="deleteCourseSection" parameterType="string">
+    delete from course_section where course_section_num = #{course_section_num}
+</delete>
+<!--删除课时-->
+<delete id="deleteCourseLesson" parameterType="string">
+    delete from course_lesson where course_lesson_num = #{course_lesson_num}
+</delete>
+</mapper>

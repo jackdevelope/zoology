@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.RoleMapper">
+    <!--角色集-->
+    <resultMap id="roleResult" type="role">
+      <id property="role_id" column="role_id"/>
+      <result property="role_name" column="role_name"/>
+      <result property="role_code" column="role_code"/>
+      <result property="role_description" column="role_description"/>
+      <result property="role_created_time" column="role_created_time"/>
+      <result property="role_updated_time" column="role_updated_time"/>
+      <result property="role_created_by" column="role_created_by"/>
+      <result property="role_updated_by" column="role_updated_by"/>
+    </resultMap>
+    <!--菜单集-->
+    <resultMap id="menuResult" type="menu">
+        <id property="menu_son_id" column="menu_son_id"/>
+        <result property="menu_son_name" column="menu_son_name"/>
+        <result property="menu_id" column="menu_id"/>
+        <result property="menu_name" column="menu_name"/>
+        <result property="menu_type_id" column="menu_type_id"/>
+        <result property="menu_href" column="menu_href"/>
+        <result property="menu_icon" column="menu_icon"/>
+        <result property="menu_description" column="menu_description"/>
+        <result property="menu_order_num" column="menu_order_num"/>
+        <result property="menu_shown" column="menu_shown"/>
+        <result property="menu_level" column="menu_level"/>
+        <result property="menu_created_time" column="menu_created_time"/>
+        <result property="menu_updated_time" column="menu_updated_time"/>
+        <result property="menu_created_by" column="menu_created_by"/>
+        <result property="menu_updated_by" column="menu_updated_by"/>
+   </resultMap>
+    <!--资源集-->
+    <resultMap id="resourceResult" type="resource">
+        <id property="resource_id" column="resource_id"/>
+        <result property="resource_name" column="resource_name"/>
+        <result property="resource_url" column="resource_url"/>
+        <result property="resource_category_num" column="resource_category_num"/>
+        <result property="resource_category_name" column="resource_category_name"/>
+        <result property="resource_description" column="resource_description"/>
+        <result property="resource_created_time" column="resource_created_time"/>
+        <result property="resource_updated_time" column="resource_updated_time"/>
+        <result property="resource_created_by" column="resource_created_by"/>
+        <result property="resource_updated_by" column="resource_updated_by"/>
+    </resultMap>
+    <!--角色资源集-->
+    <resultMap id="roleResourceResult" type="roleResource">
+        <id property="role_id" column="role_id"/>
+        <result property="role_name" column="role_name"/>
+        <result property="role_code" column="role_code"/>
+        <result property="role_description" column="role_description"/>
+        <result property="role_created_time" column="role_created_time"/>
+        <result property="role_updated_time" column="role_updated_time"/>
+        <result property="role_created_by" column="role_created_by"/>
+        <result property="role_updated_by" column="role_updated_by"/>
+        <collection property="resourceList" ofType="resource" select="selAllResource"  column="resource_id">
+        </collection>
+    </resultMap>
+    <!--查询所有角色-->
+    <select id="selAllRoleOrByName" parameterType="role" resultMap="roleResult">
+        select * from role
+        <where>
+         <if test="role_name != null and role_name != ''">
+             and role_name = #{role_name}
+         </if>
+        </where>
+    </select>
+    <!--根据角色id查询菜单-->
+    <select id="selMenuByRoleId" parameterType="int" resultType="int">
+      SELECT m.menu_id FROM role r LEFT JOIN role_menu_relation rm
+      ON r.role_id=rm.role_id LEFT JOIN menu m ON rm.menu_id = m.menu_id
+      WHERE r.role_id = #{role_id}
+    </select>
+   <!--根据角色id查询资源-->
+    <select id="selRoleByRoleId" parameterType="int" resultMap="roleResourceResult">
+      select distinct r.*,re.resource_id from role r inner join role_resource_relation rrr on r.role_id=r.role_id
+      inner join resource re on rrr.resource_id=re.resource_id where r.role_id=#{role_id}
+    </select>
+    <select id="selAllResource" parameterType="int" resultMap="resourceResult">
+      select * from resource where resource_id=#{resource_id}
+    </select>
+    <!--根据角色id清空相应角色菜单中间表-->
+    <delete id="deleteRoleMenuByRoleId" parameterType="int">
+       delete from role_menu_relation where role_id = #{role_id}
+    </delete>
+    <!--为角色增加菜单-->
+    <insert id="addRoleMenu" parameterType="role_menu_relation">
+        insert into role_menu_relation
+        values(null,#{role_id},#{menu_id},#{role_menu_created_time},
+        #{role_menu_updated_time},#{role_menu_created_by},#{role_menu_updated_by})
+        <selectKey order="AFTER" keyProperty="role_menu_id" keyColumn="role_menu_id" resultType="int">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <!--根据角色id清空相应角色资源中间表-->
+    <delete id="deleteRoleResourceByRoleId" parameterType="int">
+       delete from role_resource_relation where role_id = #{role_id}
+    </delete>
+    <!--为角色增加资源-->
+    <insert id="addRoleResource" parameterType="role_resource_relation">
+        insert into role_resource_relation
+        values(null,#{role_id},#{resource_id},#{role_resource_create_time},
+        #{role_resource_update_time},#{role_resource_create_by},#{role_resource_update_by})
+        <selectKey order="AFTER" keyProperty="role_resource_id" keyColumn="role_resource_id" resultType="int">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <!--根据角色id删除角色-->
+    <delete id="deleteRoleByRoleId" parameterType="int">
+       delete from role where role_id = #{role_id}
+    </delete>
+</mapper>

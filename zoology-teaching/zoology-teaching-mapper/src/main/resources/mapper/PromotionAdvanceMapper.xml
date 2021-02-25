@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.PromotionAdviceMapper">
+   <!--广告集-->
+    <resultMap id="adviceResult" type="promotion_ad">
+        <id property="promotion_ad_id" column="promotion_ad_id"/>
+        <result property="promotion_ad_num" column="promotion_ad_num"/>
+        <result property="promotion_ad_name" column="promotion_ad_name"/>
+        <result property="promotion_ad_keyword" column="promotion_ad_keyword"/>
+        <result property="promotion_ad_htmlContent" column="promotion_ad_htmlContent"/>
+        <result property="promotion_ad_img" column="promotion_ad_img"/>
+        <result property="promotion_ad_link" column="promotion_ad_link"/>
+        <result property="promotion_ad_creatTime" column="promotion_ad_creatTime"/>
+        <result property="promotion_ad_updateTime" column="promotion_ad_updateTime"/>
+        <result property="promotion_ad_startTime" column="promotion_ad_startTime"/>
+        <result property="promotion_ad_endTime" column="promotion_ad_endTime"/>
+        <result property="promotion_ad_is_del" column="promotion_ad_is_del"/>
+        <result property="promotion_ad_status" column="promotion_ad_status"/>
+        <result property="promotion_ad_priority" column="promotion_ad_priority"/>
+        <result property="remark" column="remark"/>
+        <result property="promotion_space_id" column="promotion_space_id"/>
+        <result property="promotion_space_num" column="promotion_space_num"/>
+        <result property="promotion_space_name" column="promotion_space_name"/>
+    </resultMap>
+    <!--广告和广告位集-->
+    <resultMap id="adviceAndSpace" type="promotion_ad">
+        <id property="promotion_ad_id" column="promotion_ad_id"/>
+        <result property="promotion_ad_num" column="promotion_ad_num"/>
+        <result property="promotion_ad_name" column="promotion_ad_name"/>
+        <result property="promotion_ad_keyword" column="promotion_ad_keyword"/>
+        <result property="promotion_ad_htmlContent" column="promotion_ad_htmlContent"/>
+        <result property="promotion_ad_img" column="promotion_ad_img"/>
+        <result property="promotion_ad_link" column="promotion_ad_link"/>
+        <result property="promotion_ad_creatTime" column="promotion_ad_creatTime"/>
+        <result property="promotion_ad_updateTime" column="promotion_ad_updateTime"/>
+        <result property="promotion_ad_startTime" column="promotion_ad_startTime"/>
+        <result property="promotion_ad_endTime" column="promotion_ad_endTime"/>
+        <result property="promotion_ad_is_del" column="promotion_ad_is_del"/>
+        <result property="promotion_ad_status" column="promotion_ad_status"/>
+        <result property="promotion_ad_priority" column="promotion_ad_priority"/>
+        <result property="remark" column="remark"/>
+        <result property="promotion_space_id" column="promotion_space_id"/>
+        <result property="promotion_space_num" column="promotion_space_num"/>
+        <result property="promotion_space_name" column="promotion_space_name"/>
+        <association property="promotion_space" select="mapper.PromotionSpaceMapper.selPromotionSpaceByPromotionSpaceId" column="promotion_space_id"></association>
+    </resultMap>
+    <select id="selPromotionAdAndSpace" resultMap="adviceAndSpace">
+        select * from promotion_ad
+    </select>
+    <select id="selPromotionAdByPromotionAdId" parameterType="int" resultMap="adviceResult">
+        select * from promotion_ad where promotion_ad.promotion_ad_id = #{promotion_ad_id}
+    </select>
+    <insert id="addPromotionAd" parameterType="promotion_ad" useGeneratedKeys="true" keyProperty="promotion_ad_id" keyColumn="promotion_ad_id">
+        insert into promotion_ad(promotion_ad_num,promotion_ad_name,promotion_ad_keyword,
+        promotion_ad_htmlContent,promotion_ad_img,promotion_ad_link,
+        promotion_ad_creatTime,promotion_ad_updateTime,promotion_ad_startTime,
+        promotion_ad_endTime,promotion_ad_is_del,promotion_ad_status,
+        promotion_ad_priority,remark,promotion_space_id,promotion_space_num,
+        promotion_space_name) values(#{promotion_ad_num},#{promotion_ad_name},#{promotion_ad_keyword},
+        #{promotion_ad_htmlContent},#{promotion_ad_img},#{promotion_ad_link},
+        #{promotion_ad_creatTime},#{promotion_ad_updateTime},#{promotion_ad_startTime},
+        #{promotion_ad_endTime},#{promotion_ad_is_del},#{promotion_ad_status},
+        #{promotion_ad_priority},#{remark},#{promotion_space_id},
+        #{promotion_space_num},promotion_space_name)
+        <selectKey order="AFTER" keyProperty="promotion_ad_id" keyColumn="promotion_ad_id" resultType="int">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <update id="editPromotionAd" parameterType="promotion_ad">
+        update promotion_ad
+        <trim prefix="set" suffixOverrides=",">
+            <if test="promotion_ad_num != null and promotion_ad_num != ''">
+                promotion_ad_num = #{promotion_ad_num},
+            </if>
+            <if test="promotion_ad_name != null and promotion_ad_name != ''">
+                promotion_ad_name = #{promotion_ad_name},
+            </if>
+            <if test="promotion_ad_keyword != null and promotion_ad_keyword != ''">
+                course_brief=#{course_brief},
+            </if>
+            <if test="promotion_ad_htmlContent != null and promotion_ad_htmlContent != ''">
+                promotion_ad_htmlContent=#{promotion_ad_htmlContent},
+            </if>
+            <if test="promotion_ad_img != null and promotion_ad_img != ''">
+                promotion_ad_img=#{promotion_ad_img},
+            </if>
+            <if test="promotion_ad_link != null and promotion_ad_link != ''">
+                promotion_ad_link=#{promotion_ad_link},
+            </if>
+            <if test="promotion_ad_creatTime != null and promotion_ad_creatTime != ''">
+                promotion_ad_creatTime=#{promotion_ad_creatTime},
+            </if>
+            <if test="promotion_ad_updateTime != null and promotion_ad_updateTime != ''">
+                promotion_ad_updateTime=#{promotion_ad_updateTime},
+            </if>
+            <if test="promotion_ad_startTime != null and promotion_ad_startTime != ''">
+                promotion_ad_startTime=#{promotion_ad_startTime},
+            </if>
+            <if test="promotion_ad_endTime != null and promotion_ad_endTime != ''">
+                promotion_ad_endTime=#{promotion_ad_endTime},
+            </if>
+            <if test="promotion_ad_is_del != null and promotion_ad_is_del != ''">
+                promotion_ad_is_del=#{promotion_ad_is_del},
+            </if>
+            <if test="promotion_ad_status != null and promotion_ad_status != ''">
+                promotion_ad_status=#{promotion_ad_status},
+            </if>
+            <if test="promotion_ad_priority != null and promotion_ad_priority != ''">
+                promotion_ad_priority=#{promotion_ad_priority},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark=#{remark},
+            </if>
+            <if test="promotion_space_id != null and promotion_space_id != ''">
+                promotion_space_id=#{promotion_space_id},
+            </if>
+            <if test="promotion_space_num != null and promotion_space_num != ''">
+                promotion_space_num=#{promotion_space_num},
+            </if>
+            <if test="promotion_space_name != null and promotion_space_name != ''">
+                promotion_space_name=#{promotion_space_name},
+            </if>
+        </trim>
+        <where>
+          <if test="promotion_ad_id != null and promotion_ad_id != ''">
+              promotion_ad_id = #{promotion_ad_id}
+          </if>
+        </where>
+    </update>
+    <delete id="deletePromotionAd" parameterType="string">
+          delete from promotion_ad where promotion_ad_num = #{promotion_ad_num}
+    </delete>
+</mapper>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.ResourceMapper">
+  <!--资源集-->
+  <resultMap id="resourceResult" type="resource">
+   <id property="resource_id" column="resource_id"/>
+   <result property="resource_name" column="resource_name"/>
+   <result property="resource_url" column="resource_url"/>
+   <result property="resource_category_num" column="resource_category_num"/>
+   <result property="resource_category_name" column="resource_category_name"/>
+   <result property="resource_description" column="resource_description"/>
+   <result property="resource_created_time" column="resource_created_time"/>
+   <result property="resource_updated_time" column="resource_updated_time"/>
+   <result property="resource_created_by" column="resource_created_by"/>
+   <result property="resource_updated_by" column="resource_updated_by"/>
+  </resultMap>
+    <!--资源分类集-->
+    <resultMap id="resourceCategoryResult" type="resource_category">
+        <result property="resource_category_num" column="resource_category_num"/>
+        <result property="resource_category_name" column="resource_category_name"/>
+        <result property="resource_category_sort" column="resource_category_sort"/>
+        <result property="resource_created_time" column="resource_created_time"/>
+        <result property="resource_updated_time" column="resource_updated_time"/>
+        <result property="resource_created_by" column="resource_created_by"/>
+        <result property="resource_updated_by" column="resource_updated_by"/>
+    </resultMap>
+  <!--多条件模糊查询所有资源-->    
+  <select id="selAllResourceByPage" parameterType="resourseListBillManyPager" resultMap="resourceResult">
+    select * from resource
+    <where>
+     <if test="resource_name != null and resource_name!= ''">
+       and resource_name like concat('%',#{resource_name},'%')
+     </if>
+     <if test="resource_url != null and resource_url != ''">
+       and resource_url = #{resource_url}
+     </if>
+     <if test="resource_category_num != null and resource_category_num != ''">
+       and resource_category_num = #{resource_category_num}
+     </if>
+    </where>
+  </select>
+    <!--查询所有资源分类-->
+    <select id="selAllResourceCategory" resultMap="resourceCategoryResult">
+        select * from resource_category
+    </select>
+    <!--增加资源-->
+    <insert id="addAllResourceCategory" useGeneratedKeys="true" keyProperty="resource_category_num" keyColumn="resource_category_num" parameterType="resource_category">
+        insert into resource_category(resource_category_num,resource_category_name,resource_category_sort,
+        resource_created_time,resource_updated_time,resource_created_by,
+        resource_updated_by)
+        values (#{resource_category_num},#{resource_category_name},#{resource_category_sort},
+        #{resource_created_time},#{resource_updated_time},#{resource_created_by},
+        #{resource_updated_by})
+    </insert>
+    <!-- 增加资源-->
+    <update id="updateAllResourceCategory" parameterType="resource_category">
+      update resource_category
+      <trim prefix="set" suffixOverrides=",">
+        <if test="resource_category_name != null and resource_category_name != ''">
+            resource_category_name=#{resource_category_name},
+        </if>
+        <if test="resource_category_sort != null and resource_category_sort != 0">
+            resource_category_sort=#{resource_category_sort},
+        </if>
+        <if test="resource_created_time != null">
+            resource_created_time=#{resource_created_time},
+        </if>
+        <if test="resource_updated_time != null">
+            resource_updated_time=#{resource_updated_time},
+        </if>
+        <if test="resource_created_by != null and resource_created_by != ''">
+            resource_created_by=#{resource_created_by},
+        </if>
+        <if test="resource_updated_by != null and resource_updated_by != ''">
+            resource_updated_by=#{resource_updated_by},
+        </if>
+    </trim>
+    <where>
+        <if test="resource_category_num != null and resource_category_num != ''">
+            resource_category_num=#{resource_category_num}
+        </if>
+    </where>
+    </update>
+    <delete id="deleteAllResourceCategory" parameterType="string">
+          delete from resource_category where resource_category_num = #{resource_category_num}
+    </delete>
+</mapper>
