@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.CourseMapper">
+   <!--课程查询片段-->
+   <sql id="selectCourse">
+        select * from course
+    </sql>
+    <!-- 老师列表清单片段 -->
+    <sql id="teacherList">
+      t.teacher_num teacher_num,t.teacher_name teacher_name,t.teacher_position teacher_position,
+      t.teacher_description teacher_description
+    </sql>
+   <!--课程集-->
+    <resultMap id="courseResult" type="course">
+       <id property="course_id" column="course_id"/>
+       <result property="course_num" column="course_num"/>
+       <result property="course_name" column="course_name"/>
+       <result property="course_brief" column="course_brief"/>
+       <result property="course_price" column="course_price"/>
+       <result property="course_price_tag" column="course_price_tag"/>
+       <result property="course_discounts" column="course_discounts"/>
+       <result property="course_discounts_tag" column="course_discounts_tag"/>
+       <result property="course_description" column="course_description"/>
+       <result property="course_description_mark_down" column="course_description_mark_down"/>
+       <result property="course_is_new_des" column="course_is_new_des"/>
+       <result property="course_share_img_url" column="course_share_img_url"/>
+       <result property="course_img_url" column="course_img_url"/>
+       <result property="course_list_img" column="course_list_img"/>
+       <result property="course_last_operator_name" column="course_last_operator_name"/>
+       <result property="course_preview_first_field" column="course_preview_first_field"/>
+       <result property="course_preview_second_field" column="course_preview_second_field"/>
+       <result property="course_sale" column="course_sale"/>
+       <result property="course_create_time" column="course_create_time"/>
+       <result property="course_delete_time" column="course_delete_time"/>
+       <result property="course_create_auto_online_time" column="course_create_auto_online_time"/>
+       <result property="course_create_auto_finish_online_time" column="course_create_auto_finish_online_time"/>
+       <result property="course_update_time" column="course_update_time"/>
+       <result property="course_total_num" column="course_total_num"/>
+       <result property="course_total_duration" column="course_total_duration"/>
+       <result property="course_sort_num" column="course_sort_num"/>
+       <result property="course_status" column="course_status"/>
+       <result property="course_is_new" column="course_is_new"/>
+       <result property="course_is_del" column="course_is_del"/>
+       <result property="remark" column="remark"/>
+    </resultMap>
+    <!--课程老师集-->
+    <resultMap id="courseTeacher" type="courseTeacher">
+        <id property="course_id" column="course_id"/>
+        <result property="course_num" column="course_num"/>
+        <result property="course_name" column="course_name"/>
+        <result property="course_brief" column="course_brief"/>
+        <result property="course_price" column="course_price"/>
+        <result property="course_price_tag" column="course_price_tag"/>
+        <result property="course_discounts" column="course_discounts"/>
+        <result property="course_discounts_tag" column="course_discounts_tag"/>
+        <result property="course_description" column="course_description"/>
+        <result property="course_description_mark_down" column="course_description_mark_down"/>
+        <result property="course_is_new_des" column="course_is_new_des"/>
+        <result property="course_share_img_url" column="course_share_img_url"/>
+        <result property="course_img_url" column="course_img_url"/>
+        <result property="course_list_img" column="course_list_img"/>
+        <result property="course_last_operator_name" column="course_last_operator_name"/>
+        <result property="course_preview_first_field" column="course_preview_first_field"/>
+        <result property="course_preview_second_field" column="course_preview_second_field"/>
+        <result property="course_sale" column="course_sale"/>
+        <result property="course_create_time" column="course_create_time"/>
+        <result property="course_update_time" column="course_update_time"/>
+        <result property="course_delete_time" column="course_delete_time"/>
+        <result property="course_create_auto_online_time" column="course_create_auto_online_time"/>
+        <result property="course_create_auto_finish_online_time" column="course_create_auto_finish_online_time"/>
+        <result property="course_total_num" column="course_total_num"/>
+        <result property="course_total_duration" column="course_total_duration"/>
+        <result property="course_sort_num" column="course_sort_num"/>
+        <result property="course_status" column="course_status"/>
+        <result property="course_is_new" column="course_is_new"/>
+        <result property="course_is_del" column="course_is_del"/>
+        <result property="remark" column="remark"/>
+        <result property="teacher_num" column="teacher_num"/>
+        <result property="teacher_name" column="teacher_name"/>
+        <result property="teacher_position" column="teacher_position"/>
+        <result property="teacher_description" column="teacher_description"/>
+    </resultMap>
+    <!--查询所有课程-->
+    <select id="selAllCourse" resultMap="courseResult">
+       <include refid="selectCourse"/>
+    </select>
+    <!--通过课程id查询单个课程-->
+    <select id="selSignCourseByCourseId" parameterType="int" resultMap="courseResult">
+        select * from course where course_id = #{course_id}
+    </select>
+    <!--通过课程名和课程状态模糊查询课程-->
+   <select id="selAllCourseByNameAndStatus" parameterType="courseStateView" resultMap="courseResult">
+       select course_id,course_num,course_name,
+       course_img_url,course_brief,course_price,
+       course_discounts,course_description,course_create_auto_online_time
+       course_create_auto_finish_online_time,course_status
+       from course
+       <where>
+         <if test="true">
+            and course_is_del != 1
+         </if>
+          <if test="course_name != null and course_name !=''">
+            and course_name like concat('%',#{course_name},'%')
+         </if>
+         <if test="course_status != null">
+            and course_status = #{course_status}
+         </if>
+        </where>
+   </select>
+    <!--通过课程id查询所有课程和老师以来进行回显-->
+    <select id="selCourseAndTeacherById" parameterType="int" resultMap="courseTeacher">
+        select c.*,
+        <include refid="teacherList"/>
+        from course c left join teacher t on c.course_id = t.course_id where c.course_id = #{course_id}
+    </select>
+   <!--增加课程-->
+    <insert id="addCourse" useGeneratedKeys="true" keyProperty="course_id" keyColumn="course_id" parameterType="course">
+        insert into course(course_num,course_name,course_brief,
+        course_price,course_price_tag,course_discounts,
+        course_discounts_tag,course_description,course_description_mark_down,
+        course_is_new_des,course_share_img_url,course_img_url,
+        course_list_img,course_last_operator_name,course_preview_first_field,
+        course_preview_second_field,course_sale,course_create_time,
+        course_update_time,course_create_auto_online_time,
+        course_create_auto_finish_online_time,course_total_num,course_total_duration,
+        course_sort_num,course_status,course_is_new,course_is_del,remark)
+        values (#{course_num},#{course_name},#{course_brief},
+        #{course_price},#{course_price_tag},#{course_discounts},
+        #{course_discounts_tag},#{course_description},#{course_description_mark_down},
+        #{course_is_new_des},#{course_share_img_url},#{course_img_url},
+        #{course_list_img},#{course_last_operator_name},#{course_preview_first_field},
+        #{course_preview_second_field},#{course_sale},#{course_create_time},
+        #{course_update_time},#{course_create_auto_online_time},
+        #{course_create_auto_finish_online_time},#{course_total_num},#{course_total_duration},
+        #{course_sort_num},#{course_status},#{course_is_new},
+        #{course_is_del},#{remark})
+        <!--获取添加成功记录返回的ID值赋值给Course实体中ID属性-->
+        <selectKey order="AFTER" keyProperty="course_id" keyColumn="course_id" resultType="int">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <!--增加老师-->
+    <insert id="addTeacher" useGeneratedKeys="true" keyProperty="teacher_id" keyColumn="teacher_id" parameterType="teacher">
+        insert into teacher(course_id,course_num,teacher_num,teacher_name,
+        teacher_position,teacher_description,teacher_create_time,
+        teacher_update_time,teacher_is_del,remark)
+        values (#{course_id},#{course_num},#{teacher_num},
+        #{teacher_name},#{teacher_position},#{teacher_description},
+        #{teacher_create_time},#{teacher_update_time},#{teacher_is_del},
+        #{remark})
+        <!--获取添加成功记录返回的ID值赋值给Teacher实体中ID属性-->
+        <selectKey resultType="int" order="AFTER" keyProperty="teacher_id" keyColumn="teacher_id">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <!--修改课程-->
+    <update id="updateCourse" parameterType="course">
+        update course
+        <trim prefix="set" suffixOverrides=",">
+            <if test="course_name != null and course_name != ''">
+                course_name=#{course_name},
+            </if>
+            <if test="course_brief != null and course_brief != ''">
+                course_brief=#{course_brief},
+            </if>
+            <if test="course_price != null and course_price != 0">
+                course_price=#{course_price},
+            </if>
+            <if test="course_price_tag != null and course_price_tag != ''">
+                course_price_tag=#{course_price_tag},
+            </if>
+            <if test="course_discounts != null and course_discounts != 0">
+                course_discounts=#{course_discounts},
+            </if>
+            <if test="course_discounts_tag != null and course_discounts_tag != ''">
+                course_discounts_tag=#{course_discounts_tag},
+            </if>
+            <if test="course_description != null and course_description != ''">
+                course_description=#{course_description},
+            </if>
+            <if test="course_description_mark_down != null and course_description_mark_down != ''">
+                course_description_mark_down=#{course_description_mark_down},
+            </if>
+            <if test="course_is_new_des != null and course_is_new_des != ''">
+                course_is_new_des=#{course_is_new_des},
+            </if>
+            <if test="course_share_img_url != null and course_share_img_url != ''">
+                course_share_img_url=#{course_share_img_url},
+            </if>
+            <if test="course_img_url != null and course_img_url != ''">
+                course_img_url=#{course_img_url},
+            </if>
+            <if test="course_list_img != null and course_list_img != ''">
+                course_list_img=#{course_list_img},
+            </if>
+            <if test="course_last_operator_name != null and course_last_operator_name != ''">
+                course_last_operator_name=#{course_last_operator_name},
+            </if>
+            <if test="course_preview_first_field != null and course_preview_first_field != ''">
+                course_preview_first_field=#{course_preview_first_field},
+            </if>
+            <if test="course_preview_second_field != null and course_preview_second_field != ''">
+                course_preview_second_field=#{course_preview_second_field},
+            </if>
+            <if test="course_sale != null and course_sale != 0">
+                course_sale=#{course_sale},
+            </if>
+            <if test="course_create_time != null">
+                course_create_time=#{course_create_time},
+            </if>
+            <if test="course_update_time != null">
+                course_update_time=#{course_update_time},
+            </if>
+            <if test="course_end_time != null">
+                course_end_time=#{course_end_time},
+            </if>
+            <if test="course_create_auto_online_time != null">
+                course_create_auto_online_time=#{course_create_auto_online_time},
+            </if>
+            <if test="course_create_auto_finish_online_time != null">
+                course_create_auto_finish_online_time=#{course_create_auto_finish_online_time},
+            </if>
+            <if test="course_total_num != null and course_total_num != 0">
+                course_total_num=#{course_total_num},
+            </if>
+            <if test="course_total_duration != null and course_total_duration != 0">
+                course_total_duration=#{course_total_duration},
+            </if>
+            <if test="course_sort_num != null and course_sort_num != ''">
+                course_sort_num=#{course_sort_num},
+            </if>
+            <if test="course_status != null and course_status != 0">
+                course_status=#{course_status},
+            </if>
+            <if test="course_is_new != null and course_is_new != ''">
+                course_is_new=#{course_is_new},
+            </if>
+            <if test="course_is_del != null and course_is_del != 0">
+                course_is_del=#{course_is_del},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark=#{remark},
+            </if>
+        </trim>
+        <where>
+          <if test="course_id != null and course_id != ''">
+               and course_id=#{course_id}
+          </if>
+          <if test="course_num != null and course_num != ''">
+               and course_num=#{course_num}
+          </if>
+        </where>
+    </update>
+    <!--修改课程状态管理-->
+    <update id="updateCourseStatus" parameterType="courseStatesShow">
+        update course set course_status= #{course_status},course_update_time = #{course_update_time} where course_id = #{course_id}  and course_num=#{course_num}
+    </update>
+    <!--修改老师-->
+    <update id="updateTeacher" parameterType="teacher">
+        update teacher
+        <trim prefix="set" suffixOverrides=",">
+            <if test="teacher_name != null and teacher_name != ''">
+                teacher_name = #{teacher_name},
+            </if>
+            <if test="teacher_position != null and teacher_position != ''">
+                teacher_position=#{teacher_position},
+            </if>
+            <if test="teacher_description != null and teacher_description != ''">
+                teacher_description=#{teacher_description},
+            </if>
+            <if test="teacher_create_time != null">
+                teacher_create_time=#{teacher_create_time},
+            </if>
+            <if test="teacher_update_time != null">
+                teacher_update_time=#{teacher_update_time},
+            </if>
+            <if test="teacher_is_del != null and teacher_is_del != ''">
+                teacher_is_del=#{teacher_is_del},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark=#{remark},
+            </if>
+        </trim>
+        <where>
+            <if test="course_id != null and course_id != ''">
+                and course_id=#{course_id}
+            </if>
+            <if test="course_num != null and course_num != ''">
+                and course_num=#{course_num}
+            </if>
+        </where>
+    </update>
+    <!--删除课程-->
+    <delete id="deleteCourse" parameterType="string">
+        delete from course where course_id=#{course_id}
+    </delete>
+    <!--删除老师-->
+    <delete id="deleteTeacher" parameterType="string">
+        delete from teacher where course_id=#{course_id}
+    </delete>
+</mapper>
