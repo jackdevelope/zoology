@@ -16,7 +16,7 @@ public class CourseStateListBill implements Serializable {
     private String course_num;//课程编号
     private String course_name;//课程名
     private String course_img_url;//课程图片url
-    private String course_brief;//课程介绍
+    private String course_brief;//课程简介
     private Double course_price;//课程原价
     private Double course_discounts;//课程优惠价
     private String course_description;//课程描述

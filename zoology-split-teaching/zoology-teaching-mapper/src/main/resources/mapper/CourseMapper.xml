@@ -17,78 +17,71 @@
        <id property="course_id" column="course_id"/>
        <result property="course_num" column="course_num"/>
        <result property="course_name" column="course_name"/>
+       <result property="course_img_url" column="course_img_url"/>
        <result property="course_brief" column="course_brief"/>
+       <result property="course_total_num" column="course_total_num"/>
+       <result property="course_total_duration" column="course_total_duration"/>
+       <result property="course_preview_first_field" column="course_preview_first_field"/>
+       <result property="course_preview_second_field" column="course_preview_second_field"/>
+       <result property="course_is_new" column="course_is_new"/>
        <result property="course_price" column="course_price"/>
        <result property="course_price_tag" column="course_price_tag"/>
        <result property="course_discounts" column="course_discounts"/>
        <result property="course_discounts_tag" column="course_discounts_tag"/>
-       <result property="course_description" column="course_description"/>
-       <result property="course_description_mark_down" column="course_description_mark_down"/>
        <result property="course_is_new_des" column="course_is_new_des"/>
-       <result property="course_share_img_url" column="course_share_img_url"/>
-       <result property="course_img_url" column="course_img_url"/>
-       <result property="course_list_img" column="course_list_img"/>
-       <result property="course_last_operator_name" column="course_last_operator_name"/>
-       <result property="course_preview_first_field" column="course_preview_first_field"/>
-       <result property="course_preview_second_field" column="course_preview_second_field"/>
        <result property="course_sale" column="course_sale"/>
+       <result property="course_share_img_title" column="course_sale"/>
+       <result property="course_share_img_url" column="course_sale"/>
+       <result property="course_share_img_brief" column="course_sale"/>
+       <result property="course_description" column="course_description"/>
+       <result property="remark" column="remark"/>
        <result property="course_create_time" column="course_create_time"/>
+       <result property="course_update_time" column="course_update_time"/>
        <result property="course_delete_time" column="course_delete_time"/>
        <result property="course_create_auto_online_time" column="course_create_auto_online_time"/>
        <result property="course_create_auto_finish_online_time" column="course_create_auto_finish_online_time"/>
-       <result property="course_update_time" column="course_update_time"/>
-       <result property="course_total_num" column="course_total_num"/>
-       <result property="course_total_duration" column="course_total_duration"/>
        <result property="course_sort_num" column="course_sort_num"/>
        <result property="course_status" column="course_status"/>
-       <result property="course_is_new" column="course_is_new"/>
        <result property="course_is_del" column="course_is_del"/>
-       <result property="remark" column="remark"/>
     </resultMap>
     <!--课程老师集-->
     <resultMap id="courseTeacher" type="courseTeacher">
         <id property="course_id" column="course_id"/>
         <result property="course_num" column="course_num"/>
         <result property="course_name" column="course_name"/>
-        <result property="course_brief" column="course_brief"/>
-        <result property="course_price" column="course_price"/>
-        <result property="course_price_tag" column="course_price_tag"/>
-        <result property="course_discounts" column="course_discounts"/>
-        <result property="course_discounts_tag" column="course_discounts_tag"/>
-        <result property="course_description" column="course_description"/>
-        <result property="course_description_mark_down" column="course_description_mark_down"/>
-        <result property="course_is_new_des" column="course_is_new_des"/>
-        <result property="course_share_img_url" column="course_share_img_url"/>
         <result property="course_img_url" column="course_img_url"/>
-        <result property="course_list_img" column="course_list_img"/>
-        <result property="course_last_operator_name" column="course_last_operator_name"/>
-        <result property="course_preview_first_field" column="course_preview_first_field"/>
-        <result property="course_preview_second_field" column="course_preview_second_field"/>
-        <result property="course_sale" column="course_sale"/>
-        <result property="course_create_time" column="course_create_time"/>
-        <result property="course_update_time" column="course_update_time"/>
-        <result property="course_delete_time" column="course_delete_time"/>
-        <result property="course_create_auto_online_time" column="course_create_auto_online_time"/>
-        <result property="course_create_auto_finish_online_time" column="course_create_auto_finish_online_time"/>
+        <result property="course_brief" column="course_brief"/>
         <result property="course_total_num" column="course_total_num"/>
         <result property="course_total_duration" column="course_total_duration"/>
-        <result property="course_sort_num" column="course_sort_num"/>
-        <result property="course_status" column="course_status"/>
-        <result property="course_is_new" column="course_is_new"/>
-        <result property="course_is_del" column="course_is_del"/>
-        <result property="remark" column="remark"/>
+        <result property="teacher_id" column="teacher_id"/>
         <result property="teacher_num" column="teacher_num"/>
         <result property="teacher_name" column="teacher_name"/>
         <result property="teacher_position" column="teacher_position"/>
         <result property="teacher_description" column="teacher_description"/>
+        <result property="course_preview_first_field" column="course_preview_first_field"/>
+        <result property="course_preview_second_field" column="course_preview_second_field"/>
+        <result property="course_is_new" column="course_is_new"/>
+        <result property="course_price" column="course_price"/>
+        <result property="course_price_tag" column="course_price_tag"/>
+        <result property="course_discounts" column="course_discounts"/>
+        <result property="course_discounts_tag" column="course_discounts_tag"/>
+        <result property="course_is_new_des" column="course_is_new_des"/>
+        <result property="course_sale" column="course_sale"/>
+        <result property="course_share_img_title" column="course_sale"/>
+        <result property="course_share_img_url" column="course_sale"/>
+        <result property="course_share_img_brief" column="course_sale"/>
+        <result property="course_description" column="course_description"/>
+        <result property="remark" column="remark"/>
+        <result property="course_create_time" column="course_create_time"/>
+        <result property="course_update_time" column="course_update_time"/>
     </resultMap>
     <!--查询所有课程-->
     <select id="selAllCourse" resultMap="courseResult">
        <include refid="selectCourse"/>
     </select>
     <!--通过课程id查询单个课程-->
-    <select id="selSignCourseByCourseId" parameterType="int" resultMap="courseResult">
-        select * from course where course_id = #{course_id}
+    <select id="selSignCourseByCourseId" parameterType="int" resultType="java.util.HashMap">
+        select course_id,course_num,course_name from course where course_id = #{course_id}
     </select>
     <!--通过课程名和课程状态模糊查询课程-->
    <select id="selAllCourseByNameAndStatus" parameterType="courseStateView" resultMap="courseResult">
@@ -117,25 +110,23 @@
     </select>
    <!--增加课程-->
     <insert id="addCourse" useGeneratedKeys="true" keyProperty="course_id" keyColumn="course_id" parameterType="course">
-        insert into course(course_num,course_name,course_brief,
+        insert into course(course_num,course_name,course_img_url,
+        course_brief,course_total_num,course_total_duration,
+        course_preview_first_field,course_preview_second_field,course_is_new,
         course_price,course_price_tag,course_discounts,
-        course_discounts_tag,course_description,course_description_mark_down,
-        course_is_new_des,course_share_img_url,course_img_url,
-        course_list_img,course_last_operator_name,course_preview_first_field,
-        course_preview_second_field,course_sale,course_create_time,
-        course_update_time,course_create_auto_online_time,
-        course_create_auto_finish_online_time,course_total_num,course_total_duration,
-        course_sort_num,course_status,course_is_new,course_is_del,remark)
-        values (#{course_num},#{course_name},#{course_brief},
+        course_discounts_tag,course_is_new_des,course_sale,
+        course_share_img_title,course_share_img_url,course_share_img_brief,
+        course_description,remark,course_create_time,course_update_time,
+        course_sort_num)
+        values (#{course_num},#{course_name},#{course_img_url},
+        #{course_brief},#{course_total_num},#{course_total_duration},
+        #{course_preview_first_field},#{course_preview_second_field},#{course_is_new},
         #{course_price},#{course_price_tag},#{course_discounts},
-        #{course_discounts_tag},#{course_description},#{course_description_mark_down},
-        #{course_is_new_des},#{course_share_img_url},#{course_img_url},
-        #{course_list_img},#{course_last_operator_name},#{course_preview_first_field},
-        #{course_preview_second_field},#{course_sale},#{course_create_time},
-        #{course_update_time},#{course_create_auto_online_time},
-        #{course_create_auto_finish_online_time},#{course_total_num},#{course_total_duration},
-        #{course_sort_num},#{course_status},#{course_is_new},
-        #{course_is_del},#{remark})
+        #{course_discounts_tag},#{course_is_new_des},#{course_sale},
+        #{course_share_img_title},#{course_share_img_url},#{course_share_img_brief},
+        #{course_description},#{remark},#{course_create_time},#{course_update_time},
+        #{course_sort_num}
+        )
         <!--获取添加成功记录返回的ID值赋值给Course实体中ID属性-->
         <selectKey order="AFTER" keyProperty="course_id" keyColumn="course_id" resultType="int">
             select LAST_INSERT_ID()
@@ -180,9 +171,6 @@
             <if test="course_description != null and course_description != ''">
                 course_description=#{course_description},
             </if>
-            <if test="course_description_mark_down != null and course_description_mark_down != ''">
-                course_description_mark_down=#{course_description_mark_down},
-            </if>
             <if test="course_is_new_des != null and course_is_new_des != ''">
                 course_is_new_des=#{course_is_new_des},
             </if>
@@ -191,12 +179,6 @@
             </if>
             <if test="course_img_url != null and course_img_url != ''">
                 course_img_url=#{course_img_url},
-            </if>
-            <if test="course_list_img != null and course_list_img != ''">
-                course_list_img=#{course_list_img},
-            </if>
-            <if test="course_last_operator_name != null and course_last_operator_name != ''">
-                course_last_operator_name=#{course_last_operator_name},
             </if>
             <if test="course_preview_first_field != null and course_preview_first_field != ''">
                 course_preview_first_field=#{course_preview_first_field},
@@ -213,8 +195,8 @@
             <if test="course_update_time != null">
                 course_update_time=#{course_update_time},
             </if>
-            <if test="course_end_time != null">
-                course_end_time=#{course_end_time},
+            <if test=" course_delete_time != null">
+                course_delete_time=#{ course_delete_time},
             </if>
             <if test="course_create_auto_online_time != null">
                 course_create_auto_online_time=#{course_create_auto_online_time},
@@ -294,10 +276,10 @@
     </update>
     <!--删除课程-->
     <delete id="deleteCourse" parameterType="string">
-        delete from course where course_id=#{course_id}
+        delete from course where course_num=#{course_num}
     </delete>
     <!--删除老师-->
     <delete id="deleteTeacher" parameterType="string">
-        delete from teacher where course_id=#{course_id}
+        delete from teacher where teacher_num=#{teacher_num}
     </delete>
 </mapper>

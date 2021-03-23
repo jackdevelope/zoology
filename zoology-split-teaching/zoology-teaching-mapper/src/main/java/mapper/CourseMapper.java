@@ -19,7 +19,7 @@ public interface CourseMapper {
     //查询所有课程
     public List<Course> selAllCourse();
     //通过课程id查询单个课程
-    public Course selSignCourseByCourseId(int course_id);
+    public HashMap selSignCourseByCourseId(int course_id);
     //通过课程名和课程状态模糊查询课程
     public List<Course> selAllCourseByNameAndStatus(CourseStateView courseStateView);
     //通过课程id查询所有课程和老师信息进行回显

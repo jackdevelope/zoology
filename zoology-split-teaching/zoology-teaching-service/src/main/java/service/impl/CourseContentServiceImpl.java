@@ -38,12 +38,6 @@ public class CourseContentServiceImpl implements CourseContentService {
     private CourseMapper courseMapper;
     public CourseContentServiceImpl() throws ParseException {
     }
-    //通过课程id查询课程名信息
-    @Override
-    public CourseSection findSignCourseIdByCourseName(String course_num) {
-        return courseContentMapper.selSignCourseIdByCourseName(course_num);
-    }
-
     //通过课程id查询课程内容(章节与课时)信息
     @Override
     public List<Course_section> findSectionAndLessonByCourseId(int course_id) {
@@ -72,7 +66,6 @@ public class CourseContentServiceImpl implements CourseContentService {
         sectionMedia.setCourse_section_num(course_section_num);
         sectionMedia.setCourse_section_create_time(date);
         sectionMedia.setCourse_section_update_time(date);
-        sectionMedia.setRemark(sectionLesson.getCourse_section_remark());
         res0=courseContentMapper.addCourseSection(sectionMedia);
         //封装课时部分信息
         BeanUtils.copyProperties(lessonMedia,sectionLesson);
@@ -95,7 +88,6 @@ public class CourseContentServiceImpl implements CourseContentService {
         lessonMedia.setCourse_lesson_num(course_lesson_num);
         lessonMedia.setCourse_lesson_create_time(date);
         lessonMedia.setCourse_lesson_update_time(date);
-        lessonMedia.setRemark(sectionLesson.getCourse_lesson_remark());
         res0=courseContentMapper.addCourseLesson(lessonMedia);
         return res0+res1;
     }

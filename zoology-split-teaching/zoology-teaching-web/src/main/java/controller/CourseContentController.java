@@ -29,15 +29,23 @@ public class CourseContentController {
     private static int res=0;
     @Autowired
     private CourseContentService courseContentService;
-    //通过课程编号查询课程id信息
-    @GetMapping(value = "/findSignCourseIdByCourseName/{course_num}")
-    public CourseSection findSignCourseIdByCourseNameInformation(@PathVariable String course_num){
-        return courseContentService.findSignCourseIdByCourseName(course_num);
-    }
     //通过课程id查询课程内容(章节与课时)信息
     @GetMapping(value = "/findCourseContentByCourseId/{course_id}")
-    public List<Course_section> findCourseContentByCourseIdInformation(@PathVariable int course_id){
-        return courseContentService.findSectionAndLessonByCourseId(course_id);
+    public ResponseResult findCourseContentByCourseIdInformation(@PathVariable int course_id){
+        List<Course_section> courseSections=courseContentService.findSectionAndLessonByCourseId(course_id);
+        System.out.println(courseSections.toString());
+        if (courseSections.size()!=0){
+            responseResult.setRes(true);
+            responseResult.setState(ResponseState.SUCCESS.getCode());
+            responseResult.setMessage(ResponseState.SUCCESS.getMessage());
+            responseResult.setContent(courseSections);
+        }else {
+            responseResult.setRes(false);
+            responseResult.setState(ResponseState.DATABASE_ERROR.getCode());
+            responseResult.setMessage(ResponseState.DATABASE_ERROR.getMessage());
+            responseResult.setContent(courseSections);
+        }
+        return responseResult;
     }
     //新增或修改章节和课时信息
     @PostMapping(value = "/saveOrEditCourseContent")

@@ -22,7 +22,7 @@ public interface CourseService {
     //查询所有课程信息
     public List<Course> findCourse();
     //通过课程id查询相应课程信息
-    public Course findSignCourseByCourseId(int course_id);
+    public HashMap findSignCourseByCourseId(int course_id);
     //通过课程名和课程状态查询课程信息
     public JSONArray findCourseByNameAndStatus(CourseStateView courseStateView) throws InvocationTargetException, IllegalAccessException;
     //通过课程id查询所有课程和老师信息

@@ -11,8 +11,6 @@ import java.util.List;
  * 课程内容管理mapper层
  */
 public interface CourseContentMapper {
-    //通过课程id查询课程名以来进行行章节对应课程信息的回显或直接通过课程id查询相应课程
-    public CourseSection selSignCourseIdByCourseName(String course_num);
     //通过课程id查询课程内容(章节与课时)
     public List<Course_section> selSectionAndLessonByCourseId(int course_id);
     //新增章节和课时

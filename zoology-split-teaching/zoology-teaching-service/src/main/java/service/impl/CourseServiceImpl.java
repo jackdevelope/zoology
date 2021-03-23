@@ -40,6 +40,8 @@ public class CourseServiceImpl implements CourseService {
     //返回结果标志器
     private static int res0=0;
     private static int res1=0;
+    //计数器
+    private int count=0;
     @Autowired
     private CourseMapper courseMapper;
 
@@ -53,7 +55,7 @@ public class CourseServiceImpl implements CourseService {
     }
     //通过课程id查询相应课程信息
     @Override
-    public Course findSignCourseByCourseId(int course_id){
+    public HashMap findSignCourseByCourseId(int course_id){
         return courseMapper.selSignCourseByCourseId(course_id);
     }
     //通过课程名和课程状态查询课程信息
@@ -91,7 +93,7 @@ public class CourseServiceImpl implements CourseService {
     //保存课程和老师信息
     @Override
     public int saveCourseAndTeacher(CourseTeacher courseTeacher) throws ParseException, InvocationTargetException, IllegalAccessException {
-         //设置课程编号和老师编号结果器
+        //设置课程编号和老师编号结果器
          String courseNumResult;
         //封装部分课程
         BeanUtils.copyProperties(courseMedia,courseTeacher);
@@ -108,10 +110,14 @@ public class CourseServiceImpl implements CourseService {
         }
         coreCourseName.delete(0,coreCourseName.length()/2);
         courseNumResult=courseNum+coreCourseName;
+
         //封装课程编号及时间
+        //开始计数
+        count++;
         courseMedia.setCourse_num(courseNumResult);
         courseMedia.setCourse_create_time(date);
         courseMedia.setCourse_update_time(date);
+        courseMedia.setCourse_sort_num(count);
         res0=courseMapper.addCourse(courseMedia);
         //封装老师
         BeanUtils.copyProperties(teacherMedia,courseTeacher);
@@ -144,7 +150,6 @@ public class CourseServiceImpl implements CourseService {
         res1=courseMapper.updateTeacher(teacherMedia);
         return res0+res1;
     }
-
     //修改课程状态信息
     @Override
     public int editCourseStatus(int course_id,int course_status) {

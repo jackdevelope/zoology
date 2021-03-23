@@ -16,8 +16,6 @@ import java.util.List;
      courseContent课程内容管理Service层
  */
 public interface CourseContentService {
-    //通过课程id查询课程名信息
-    public CourseSection findSignCourseIdByCourseName(String course_num);
     //通过课程id查询课程内容(章节与课时)信息
     public List<Course_section> findSectionAndLessonByCourseId(int course_id);
     //新增章节和课时信息

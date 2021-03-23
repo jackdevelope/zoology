@@ -43,17 +43,17 @@ public class CourseController {
     //通过课程id查询相应课程信息
     @GetMapping(value = "/findSignCourseByCourseId/{course_id}")
     public ResponseResult findSignCourseByCourseIdInformation(@PathVariable int course_id){
-        Course course = courseService.findSignCourseByCourseId(course_id);
-        if (course!=null){
+        HashMap courseInfor = courseService.findSignCourseByCourseId(course_id);
+        if (courseInfor!=null){
             responseResult.setRes(true);
             responseResult.setState(ResponseState.SUCCESS.getCode());
             responseResult.setMessage(ResponseState.SUCCESS.getMessage());
-            responseResult.setContent(course);
+            responseResult.setContent(courseInfor);
         }else {
             responseResult.setRes(false);
             responseResult.setState(ResponseState.UNKNOWN_ERROR.getCode());
             responseResult.setMessage(ResponseState.UNKNOWN_ERROR.getMessage());
-            responseResult.setContent(course);
+            responseResult.setContent(courseInfor);
         }
         return responseResult;
     }
@@ -77,7 +77,7 @@ public class CourseController {
     //通过课程id查询所有课程和老师信息
     @GetMapping(value = "/findCourseAndTeacherByCourseId/{course_id}")
     public ResponseResult findCourseAndTeacherByCourseIdInformation(@PathVariable int course_id){
-        System.out.println(course_id);
+       
         CourseTeacher courseTeacher = courseService.findCourseAndTeacherByCourseId(course_id);
         if (courseTeacher!=null){
             responseResult.setRes(true);
@@ -153,7 +153,6 @@ public class CourseController {
     public ResponseResult editCourseStatusInformation(@PathVariable int course_id,@PathVariable int course_status){
         try {
             res = courseService.editCourseStatus(course_id,course_status);
-            System.out.println("res:"+res);
             if (res!=0){
                 responseResult.setRes(true);
                 responseResult.setState(ResponseState.SUCCESS.getCode());

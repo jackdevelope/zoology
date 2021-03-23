@@ -9,17 +9,8 @@
     </sql>
     <!-- 课时列表清单片段 -->
     <sql id="lessonList">
-      cl.course_lesson_id, cl.course_id, cl.course_section_id,
-      cl.course_section_num,cl.course_lesson_num,cl.course_lesson_theme,
-      cl.course_lesson_order_num, cl.course_lesson_is_free,cl.course_lesson_order_num,
-      cl.course_lesson_status
+    cl.*
     </sql>
- <!--章节对应课程集-->
- <resultMap id="courseSection" type="courseSection">
-     <id property="course_id" column="course_id"/>
-     <result property="course_num" column="course_num"/>
-     <result property="course_name" column="course_name"/>
- </resultMap>
  <!--章节集-->
  <resultMap id="section" type="course_section">
      <id property="course_section_id" column="course_section_id"/>
@@ -31,27 +22,10 @@
      <result property="course_section_order_num" column="course_section_order_num"/>
      <result property="course_section_create_time" column="course_section_create_time"/>
      <result property="course_section_update_time" column="course_section_update_time"/>
-     <result property="course_section_delete_time" column="course_section_delete_time"/>
      <result property="course_section_status" column="course_section_status"/>
-     <result property="course_section_is_de" column="course_section_is_de"/>
-     <result property="remark" column="remark"/>
  </resultMap>
-<!--章节课时集-->
-<resultMap id="sectionLesson" type="course_section">
-  <id property="course_section_id" column="course_section_id"/>
-  <result property="course_id" column="course_id"/>
-  <result property="course_num" column="course_num"/>
-  <result property="course_section_num" column="course_section_num"/>
-  <result property="course_section_name" column="course_section_name"/>
-  <result property="course_section_description" column="course_section_description"/>
-  <result property="course_section_order_num" column="course_section_order_num"/>
-  <result property="course_section_create_time" column="course_section_create_time"/>
-  <result property="course_section_update_time" column="course_section_update_time"/>
-  <result property="course_section_delete_time" column="course_section_delete_time"/>
-  <result property="course_section_status" column="course_section_status"/>
-  <result property="course_section_is_de" column="course_section_is_de"/>
-  <result property="remark" column="remark"/>
-  <collection property="courseLessons" ofType="course_lesson">
+<!--课时集-->
+ <resultMap id="lesson" type="course_lesson">
      <id property="course_lesson_id" column="course_lesson_id"/>
      <result property="course_id" column="course_id"/>
      <result property="course_num" column="course_num"/>
@@ -63,17 +37,37 @@
      <result property="course_lesson_order_num" column="course_lesson_order_num"/>
      <result property="course_lesson_create_time" column="course_lesson_create_time"/>
      <result property="course_lesson_update_time" column="course_lesson_update_time"/>
-     <result property="course_lesson_delete_time" column="course_lesson_delete_time"/>
      <result property="course_lesson_status" column="course_lesson_status"/>
      <result property="course_lesson_is_free" column="course_lesson_is_free"/>
-     <result property="course_lesson_is_del" column="course_lesson_is_del"/>
-     <result property="remark" column="remark"/>
+ </resultMap>
+<!--章节课时集-->
+<resultMap id="sectionLesson" type="course_section">
+    <id property="course_section_id" column="course_section_id"/>
+    <result property="course_id" column="course_id"/>
+    <result property="course_num" column="course_num"/>
+    <result property="course_section_num" column="course_section_num"/>
+    <result property="course_section_name" column="course_section_name"/>
+    <result property="course_section_description" column="course_section_description"/>
+    <result property="course_section_order_num" column="course_section_order_num"/>
+    <result property="course_section_create_time" column="course_section_create_time"/>
+    <result property="course_section_update_time" column="course_section_update_time"/>
+    <result property="course_section_status" column="course_section_status"/>
+    <collection property="courseLessons" ofType="course_lesson">
+        <id property="course_lesson_id" column="course_lesson_id"/>
+        <result property="course_id" column="course_id"/>
+        <result property="course_num" column="course_num"/>
+        <result property="course_section_id" column="course_section_id"/>
+        <result property="course_section_num" column="course_section_num"/>
+        <result property="course_lesson_num" column="course_lesson_num"/>
+        <result property="course_lesson_theme" column="course_lesson_theme"/>
+        <result property="course_lesson_duration" column="course_lesson_duration"/>
+        <result property="course_lesson_order_num" column="course_lesson_order_num"/>
+        <result property="course_lesson_create_time" column="course_lesson_create_time"/>
+        <result property="course_lesson_update_time" column="course_lesson_update_time"/>
+        <result property="course_lesson_status" column="course_lesson_status"/>
+        <result property="course_lesson_is_free" column="course_lesson_is_free"/>
   </collection>
 </resultMap>
-    <!--通过课程id查询课程名以来进行行章节对应课程信息的回显或直接通过课程id查询相应课程-->
-    <select id="selSignCourseIdByCourseName" parameterType="string" resultMap="courseSection">
-        select course_id,course_num,course_name from course where course_num = #{course_num}
-    </select>
 <!-- 根据课程id查询课程内容(章节与课时) -->
 <select id="selSectionAndLessonByCourseId" parameterType="int" resultMap="sectionLesson">
    select cs.*,

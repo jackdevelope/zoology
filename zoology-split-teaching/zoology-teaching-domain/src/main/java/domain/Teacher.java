@@ -9,13 +9,13 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 @Data
 public class Teacher {
-    private Integer teacher_id;//老师号
-    private Integer course_id;//课程号
+    private Integer teacher_id;//讲师id
+    private Integer course_id;//课程id
     private String course_num;//课程编号
-    private String teacher_num;//老师编号
-    private String teacher_name;//老师名
-    private String teacher_position;//老师职位
-    private String teacher_description;//老师职位描述
+    private String teacher_num;//讲师编号
+    private String teacher_name;//讲师姓名
+    private String teacher_position;//讲师等级
+    private String teacher_description;//讲师简介
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private java.util.Date teacher_create_time; //老师创建时间
